@@ -3,6 +3,8 @@ package com.example.custom_alert_dialog_18_02_25;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -19,17 +21,65 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import java.text.DecimalFormat;
+
+/**
+ * The type Main activity.
+ */
 public class MainActivity extends AppCompatActivity implements
         AdapterView.OnItemClickListener {
-    TextView tv1,tv2,tv3,tv4;
+    /**
+     * The Tv 1.
+     */
+    TextView tv1,
+    /**
+     * The Tv 2.
+     */
+    tv2,
+    /**
+     * The Tv 3.
+     */
+    tv3,
+    /**
+     * The Tv 4.
+     */
+    tv4;
+    /**
+     * The Lv.
+     */
     ListView lv;
-    EditText eD1 , eD2;
+    /**
+     * The E d 1.
+     */
+    EditText eD1 ,
+    /**
+     * The E d 2.
+     */
+    eD2;
+    /**
+     * The Xml dialog.
+     */
     LinearLayout xml_dialog;
+    /**
+     * The Adb.
+     */
     AlertDialog.Builder adb;
 
+    /**
+     * The Arr.
+     */
     double[] arr = new double[20];
+    /**
+     * The Bool.
+     */
     boolean bool = false;
+    /**
+     * The N 1.
+     */
     double n1 = 0;
+    /**
+     * The Q.
+     */
     double q = 0;
 
     @Override
@@ -40,6 +90,10 @@ public class MainActivity extends AppCompatActivity implements
 
         weddings();
     }
+
+    /**
+     * Update data.
+     */
     public void update_data()
     {
         tv1.setText(String.valueOf(n1));
@@ -48,14 +102,17 @@ public class MainActivity extends AppCompatActivity implements
         String[] arrStr = new String[arr.length];
         for (int i = 0; i < arr.length; i++)
         {
-            arrStr[i] = String.format("%.2f", arr[i]);
+            arrStr[i] = give_format(arr[i]);
         }
-
         ArrayAdapter<String> adp = new ArrayAdapter<String>(this, androidx.appcompat.R.layout.support_simple_spinner_dropdown_item,arrStr);
         lv.setAdapter(adp);
         lv.setChoiceMode(ListView.CHOICE_MODE_SINGLE);
         lv.setOnItemClickListener(this);
     }
+
+    /**
+     * Weddings.
+     */
     public void weddings()
     {
         /*
@@ -69,6 +126,13 @@ public class MainActivity extends AppCompatActivity implements
 
     }
 
+    /**
+     * Give arr.
+     *
+     * @param a      the a
+     * @param k      the k
+     * @param option the option
+     */
     public void give_arr(double a , double k ,boolean option)
     {
         //input - the function get 2 doubles variable and one boolean, false - Engineering, true - Invoice
@@ -92,11 +156,16 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id)
     {
-        tv2.setText(String.format("%.2f", arr[position]));
+        tv2.setText(give_format(arr[position]));
         tv3.setText( (position)+1 + " ");
-        tv4.setText(String.format("%.2f",sum_numbers(position)) + "");
+        tv4.setText(give_format(sum_numbers(position)));
     }
 
+    /**
+     * Data cliced.
+     *
+     * @param view the view
+     */
     public void data_cliced(View view)
     {
         xml_dialog = (LinearLayout) getLayoutInflater().inflate(R.layout.layout,null);
@@ -105,12 +174,16 @@ public class MainActivity extends AppCompatActivity implements
 
         adb = new AlertDialog.Builder(this);
         adb.setView(xml_dialog);
+        adb.setTitle( "Data Settings:" ) ;
         adb.setPositiveButton("Enter",myclick);
         adb.setNeutralButton("Cancel",myclick);
         adb.show();
     }
 
 
+    /**
+     * The Myclick.
+     */
     DialogInterface.OnClickListener myclick = new DialogInterface.OnClickListener() {
         @Override
         public void onClick(DialogInterface dialog, int which)
@@ -138,6 +211,12 @@ public class MainActivity extends AppCompatActivity implements
         }
     };
 
+    /**
+     * Sum numbers double.
+     *
+     * @param index the index
+     * @return the double
+     */
     public double sum_numbers(int index)
     {
         //input - the function get index of the arr
@@ -150,6 +229,33 @@ public class MainActivity extends AppCompatActivity implements
         return sum;
     }
 
+    /**
+     * Give format string.
+     *
+     * @param num the num
+     * @return the string
+     */
+    public String give_format(double num)
+    {
+        String format = Double.toString(num);
+        if(format.replace(".", "").length() > 10)
+        {
+            DecimalFormat scientificFormat = new DecimalFormat("0.#########E0");
+            format = scientificFormat.format(num);
+            return format;
+        }
+        else
+        {
+            return String.format("%.2f",num);
+        }
+    }
+
+    /**
+     * Check legal input boolean.
+     *
+     * @param input the input
+     * @return the boolean
+     */
     public boolean check_legal_input(String input)
     {
         // true not good
@@ -159,5 +265,22 @@ public class MainActivity extends AppCompatActivity implements
             return true;
         }
         return false;
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu (Menu menu) {
+        getMenuInflater().inflate(R.menu.main,menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    public boolean onOptionsItemSelected (MenuItem item) {
+        int id = item.getItemId();
+
+        if(id == R.id.it2)
+        {
+            Intent si = new Intent(this, MainActivity2.class);
+            startActivity(si);
+        }
+        return true;
     }
 }
