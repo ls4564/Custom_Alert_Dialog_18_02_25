@@ -185,12 +185,11 @@
                 android:orientation="horizontal">
 
                 <Button
-                    android:id="@+id/button2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:backgroundTint="#BFEBA238"
-                    android:onClick="go_back"
-                    android:text="Button"
+                    android:onClick="data_cliced"
+                    android:text="Enter Data"
                     android:textColorLink="#673AB7" />
             </LinearLayout>
 

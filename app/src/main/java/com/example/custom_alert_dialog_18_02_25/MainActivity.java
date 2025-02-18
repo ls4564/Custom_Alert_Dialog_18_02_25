@@ -1,14 +1,19 @@
 package com.example.custom_alert_dialog_18_02_25;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -18,12 +23,14 @@ public class MainActivity extends AppCompatActivity implements
         AdapterView.OnItemClickListener {
     TextView tv1,tv2,tv3,tv4;
     ListView lv;
-    Intent gi;
+    EditText eD1 , eD2;
+    LinearLayout xml_dialog;
+    AlertDialog.Builder adb;
 
     double[] arr = new double[20];
     boolean bool = false;
-    double n1 = 3;
-    double q = 4;
+    double n1 = 0;
+    double q = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -32,7 +39,6 @@ public class MainActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_main);
 
         weddings();
-        update_data();
     }
     public void update_data()
     {
@@ -60,6 +66,7 @@ public class MainActivity extends AppCompatActivity implements
         tv3 = (TextView) findViewById(R.id.tv3);
         tv4 = (TextView) findViewById(R.id.tv4);
         lv = (ListView) findViewById(R.id.lv);
+
     }
 
     public void give_arr(double a , double k ,boolean option)
@@ -81,6 +88,56 @@ public class MainActivity extends AppCompatActivity implements
             }
         }
     }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+    {
+        tv2.setText(String.format("%.2f", arr[position]));
+        tv3.setText( (position)+1 + " ");
+        tv4.setText(String.format("%.2f",sum_numbers(position)) + "");
+    }
+
+    public void data_cliced(View view)
+    {
+        xml_dialog = (LinearLayout) getLayoutInflater().inflate(R.layout.layout,null);
+        eD1 = (EditText) xml_dialog.findViewById(R.id.eD1);
+        eD2 = (EditText) xml_dialog.findViewById(R.id.eD2);
+
+        adb = new AlertDialog.Builder(this);
+        adb.setView(xml_dialog);
+        adb.setPositiveButton("Enter",myclick);
+        adb.setNeutralButton("Cancel",myclick);
+        adb.show();
+    }
+
+
+    DialogInterface.OnClickListener myclick = new DialogInterface.OnClickListener() {
+        @Override
+        public void onClick(DialogInterface dialog, int which)
+        {
+            if(which == DialogInterface.BUTTON_POSITIVE)
+            {
+                String str1, str2;
+                str1 = eD1.getText().toString();
+                str2 = eD1.getText().toString();
+                if(!check_legal_input(str1) && !check_legal_input(str2))
+                {
+                    n1 =  Double.parseDouble(str1);
+                    q =  Double.parseDouble(str2);
+                    update_data();
+                }
+                else
+                {
+                    Toast.makeText(getApplicationContext(), "Illegal input", Toast.LENGTH_SHORT).show();
+
+                }
+            } else if (which == DialogInterface.BUTTON_NEGATIVE)
+            {
+                dialog.cancel();
+            }
+        }
+    };
+
     public double sum_numbers(int index)
     {
         //input - the function get index of the arr
@@ -93,14 +150,14 @@ public class MainActivity extends AppCompatActivity implements
         return sum;
     }
 
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+    public boolean check_legal_input(String input)
     {
-        tv2.setText(String.format("%.2f", arr[position]));
-        tv3.setText( (position)+1 + " ");
-        tv4.setText(String.format("%.2f",sum_numbers(position)) + "");
+        // true not good
+        // false  good
+        if(input.isEmpty() || input.isEmpty() || input.equals(".") || input.equals("-") || input.equals(".-") || input.equals("-.") || input.equals("+") || input.equals(".+") || input.equals("+."))
+        {
+            return true;
+        }
+        return false;
     }
-
-
-
 }
